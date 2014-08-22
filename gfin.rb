@@ -10,4 +10,4 @@ branch_name = gitbranch.match(/(?<=\/).*?$/)
 
 command = "git flow #{branch_type} finish #{branch_name}"
 puts command
-puts %(command)
+exec(command)
