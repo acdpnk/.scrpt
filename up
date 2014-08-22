@@ -1,0 +1,41 @@
+#!/bin/bash
+
+if [ $(echo $0 | tail -c 2) == "t" ]; then
+	this=t
+	maxlen=140
+	client=ttytter
+else if [ $(echo $0 | tail -c 2) == "a" ]; then
+	this=a
+	maxlen=256
+	client=texapp
+fi
+fi
+
+logpath="$HOME/.scrpt/.${this}log"
+
+post=""
+
+for word in $@; do
+	post="$post $word"
+done
+
+count=${#post}
+
+let count-=maxlen
+
+if [ $count -le 0 ]; then
+	$client -status="$post" > $logpath
+
+	if grep -Fqi "FAIL" $logpath; then
+		echo "$this: ...ugh, something went wrong :("
+		rm $logpath
+		exit 1
+	else
+		echo "$this: done."
+	fi
+	rm $logpath
+	exit 0
+else
+	echo "$this: too long by $count :("
+	exit 1
+fi
